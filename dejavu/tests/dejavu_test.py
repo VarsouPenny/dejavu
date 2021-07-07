@@ -7,7 +7,7 @@ import subprocess
 import traceback
 from os import listdir, makedirs, walk
 from os.path import basename, exists, isfile, join, splitext
-
+import ast
 import matplotlib.pyplot as plt
 import numpy as np
 from pydub import AudioSegment
@@ -56,6 +56,8 @@ class DejavuTest:
 
         # variable confidence
         self.result_match_confidence = [[0 for x in range(self.n_columns)] for x in range(self.n_lines)]
+        # variable average confidence
+        self.result_list_confidence = 0
 
         self.begin()
 
@@ -120,7 +122,7 @@ class DejavuTest:
             line = self.get_line_id(song)
             result = subprocess.check_output([
                 "python",
-                "dejavu.py",
+                "dejavu_1.py",
                 '-r',
                 'file',
                 join(self.test_folder, f)])
@@ -136,12 +138,26 @@ class DejavuTest:
                 result = result.strip()
                 # we parse the output song back to a json
                 result = json.loads(result.decode('utf-8').replace("'", '"').replace(': b"', ':"'))
+                print(result)
+                
+                # result = result.replace("'", ' "')
+                # result = result.replace("{'", '{"')
+                # result = result.replace("':", '":')
+                # result = result.replace("',", '",')
+                # # which song did we predict? We consider only the first match.
 
-                # which song did we predict? We consider only the first match.
-                match = result[RESULTS][0]
-                song_result = match[SONG_NAME]
-                log_msg(f'song: {song}')
-                log_msg(f'song_result: {song_result}')
+                # result =result[0]
+                # song_result = result["song_name"]
+                # log_msg('song: %s' % song)
+                # log_msg('song_result: %s' % song_result)
+                if result["results"] != []:
+                    match = result[RESULTS][0]
+                    song_result = match[SONG_NAME]
+                    log_msg(f'song: {song}')
+                    log_msg(f'song_result: {song_result}')
+                else:
+                    print("den ton vrhka proxwraw")
+                    continue
 
                 if song_result != song:
                     log_msg('invalid match')
@@ -171,7 +187,7 @@ class DejavuTest:
                     log_msg(f'confidence: {match[HASHES_MATCHED]}')
                     log_msg(f'song start_time: {song_start_time}')
                     log_msg(f'result start time: {result_start_time}')
-
+                    self.result_list_confidence =+ match[HASHES_MATCHED]
                     if self.result_matching_times[line][col] == 0:
                         log_msg('accurate match')
                     else:
