@@ -1,6 +1,7 @@
 import argparse
 import logging
 import time
+import os
 from os import makedirs
 from os.path import exists, join
 from shutil import rmtree
@@ -48,7 +49,10 @@ def main(seconds: int, results_folder: str, temp_folder: str, log: bool, silent:
     all_matching_times_counter = [[[0 for x in range(tests)] for x in range(2)] for x in range(n_secs)]
     all_query_duration = [[[0 for x in range(tests)] for x in range(djv.n_lines)] for x in range(n_secs)]
     all_match_confidence = [[[0 for x in range(tests)] for x in range(djv.n_lines)] for x in range(n_secs)]
-
+    average_confidence_no = 0
+    average_confidence_yes = 0
+    count_no = 1
+    count_yes = 1
     # group results by seconds
     for line in range(0, djv.n_lines):
         for col in range(0, djv.n_columns):
@@ -60,8 +64,13 @@ def main(seconds: int, results_folder: str, temp_folder: str, log: bool, silent:
 
             if djv_match_result == 'yes':
                 all_match_counter[col][0][0] += 1
+                average_confidence_yes +=all_match_confidence[col][line][0]
+                count_yes +=1
+
             elif djv_match_result == 'no':
                 all_match_counter[col][1][0] += 1
+                average_confidence_no +=all_match_confidence[col][line][0]
+                count_no +=1
             else:
                 all_match_counter[col][2][0] += 1
 
@@ -71,7 +80,9 @@ def main(seconds: int, results_folder: str, temp_folder: str, log: bool, silent:
                 all_matching_times_counter[col][0][0] += 1
             elif djv_match_acc != 0:
                 all_matching_times_counter[col][1][0] += 1
-
+    print (len(os.listdir(temp_folder)))
+    print("Average match confidence:", (djv.result_list_confidence/len(os.listdir(temp_folder)))*100)
+    print("Average no match confidence:", average_confidence_no/count_no)
     # create plots
     djv.create_plots('Confidence', all_match_confidence, results_folder)
     djv.create_plots('Query duration', all_query_duration, results_folder)
@@ -104,8 +115,6 @@ def main(seconds: int, results_folder: str, temp_folder: str, log: bool, silent:
         fig.savefig(fig_name)
 
     for sec in range(0, n_secs):
-        ind = np.arange(2)
-        width = 0.25  # the width of the bars
 
         fig = plt.figure()
         ax = fig.add_subplot(111)
