@@ -241,9 +241,7 @@ implementation and prior testing performance. According to our tests Dejavu is m
 for microphone recognition it depends on the amount of songs that database has and the part of song that is given as input to identify.
 Finally, some thoughts about future work:<br />
 Try with more that 10k songs.<br />
-
 Calculate query duration in different databases and compare.<br />
-
 Calculate and compare confidence in different databases.
 
 
