@@ -237,18 +237,16 @@ Bellow we have an array which summarizes our results.
  
  In this paper, we analysed the performance of an open-source
 audio fingerprinting framework, Dejavu, in songs identification with data synthesised to simulate the appropriate conditions. In evaluation against the collective benchmark for  songs identification with audio fingerprinting, Dejavu measured up to the expectations derived from its
-implementation and prior testing performance. In addition, its
-configuration was further optimised to target its weaknesses,
-namely its performance in pitch shifting. This yielded a configuration superior to the default one in terms of the benchmark.
-To advance even further in the investigation of Dejavu’s
-optimal configuration, the confidence thresholds should be
-examined and tested with precision higher than two decimal
-places, as this accuracy may not provide enough detail to determine the match correctness. Furthermore, the time offset
-of identification relative to the input should be analysed in
-order to pinpoint the exact parts of the noise that are easier
-or more difficult to identify. In addition, query time appears
-to have no correlation with the other metrics. To better understand the inner workings of the matching algorithm, it is
-recommended to be examined in more detail.
+implementation and prior testing performance. According to our tests Dejavu is more sensitive to small time queries than in noise level, and
+for microphone recognition it depends on the amount of songs that database has and the part of song that is given as input to identify.
+Finally, some thoughts about future work:<br />
+Try with more that 10k songs.<br />
+
+Calculate query duration in different databases and compare.<br />
+
+Calculate and compare confidence in different databases.
+
+
 
 ## References
 [1] P. Cano and E. Batlle, “A review of audio fingerprinting,” Journal of VLSI Signal Processing, vol. 41,
